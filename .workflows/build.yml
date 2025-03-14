@@ -8,16 +8,16 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest  # 切换到 Windows 环境以支持隐藏终端窗口
+    runs-on: windows-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3  # 升级到 v3 版本
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4  # 升级到最新 v4 版本
       with:
-        python-version: '3.x'  # 指定你的 Python 版本（如 3.8）
+        python-version: '3.10'  # 如 3.8、3.9、3.10
 
     - name: Install dependencies
       run: |
@@ -27,14 +27,14 @@ jobs:
 
     - name: Build main.py with PyInstaller (no console)
       run: |
-        pyinstaller --onefile --noconsole main.py  # 打包 main.py 并隐藏终端窗口
+        pyinstaller --onefile --noconsole main.py
 
     - name: Build music_open.py with PyInstaller
       run: |
-        pyinstaller --onefile music_open.py  # 打包 music_open.py
+        pyinstaller --onefile music_open.py
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3  # 升级到 v3 版本
       with:
         name: executables
         path: dist/
