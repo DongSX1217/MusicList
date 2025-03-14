@@ -17,7 +17,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4  # 升级到最新 v4 版本
       with:
-        python-version: '3.10'  # 如 3.8、3.9、3.10
+        python-version: '3.12'  # 如 3.8、3.9、3.10
 
     - name: Install dependencies
       run: |
