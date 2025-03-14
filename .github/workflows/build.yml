@@ -12,12 +12,12 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3  # 升级到 v3 版本
+      uses: actions/checkout@v4  # 更新到最新稳定版
 
     - name: Set up Python
-      uses: actions/setup-python@v4  # 升级到最新 v4 版本
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.12'  # 如 3.8、3.9、3.10
+        python-version: '3.10'  # 明确指定具体版本
 
     - name: Install dependencies
       run: |
@@ -25,16 +25,24 @@ jobs:
         pip install pyinstaller
         pip install -r requirements.txt
 
-    - name: Build main.py with PyInstaller (no console)
+    - name: Clean previous builds
+      run: |
+        Remove-Item -Recurse -Force dist, build, __pycache__ -ErrorAction SilentlyContinue
+
+    - name: Build main.py (no console)
       run: |
         pyinstaller --onefile --noconsole main.py
 
-    - name: Build music_open.py with PyInstaller
+    - name: Build music_open.py
       run: |
         pyinstaller --onefile music_open.py
 
+    - name: Verify build output
+      run: |
+        Get-ChildItem -Path dist -Recurse
+
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3  # 升级到 v3 版本
+      uses: actions/upload-artifact@v4  # 使用最新v4版本
       with:
         name: executables
         path: dist/
