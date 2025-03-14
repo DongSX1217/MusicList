@@ -1,0 +1,10 @@
+data/
+*.log
+music/
+music/*
+settings.json
+temp/
+*.spec
+build/
+dist/
+*.exe
