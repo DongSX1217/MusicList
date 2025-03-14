@@ -18,7 +18,7 @@ def download_file(url, local_filename):
                         f.write(chunk)
         return local_filename
     except Exception as e:
-        messagebox.showerror("下载错误", f"文件下载失败: {str(e)}")
+        messagebox.showerror("下载错误", f"文件下载失败:  {str(e)}")
         return None
 
 def play_music(file_path):
