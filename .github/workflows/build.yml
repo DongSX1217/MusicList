@@ -12,12 +12,12 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4  # 更新到最新稳定版
+      uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'  # 明确指定具体版本
+        python-version: '3.10'  # 改为你实际使用的版本
 
     - name: Install dependencies
       run: |
@@ -37,12 +37,14 @@ jobs:
       run: |
         pyinstaller --onefile music_open.py
 
-    - name: Verify build output
-      run: |
-        Get-ChildItem -Path dist -Recurse
-
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v4  # 使用最新v4版本
+    - name: Upload main.exe
+      uses: actions/upload-artifact@v4
       with:
-        name: executables
-        path: dist/
+        name: main   # 第一个产物的自定义名称
+        path: dist/main.exe  # 精确指定文件路径
+
+    - name: Upload music_open.exe
+      uses: actions/upload-artifact@v4
+      with:
+        name: music  # 第二个产物的自定义名称
+        path: dist/music_open.exe
