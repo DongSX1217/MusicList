@@ -1195,6 +1195,7 @@ class MainWindow(QWidget):
             self.load_text_data()
 
             QMessageBox.information(self, "成功", "音乐已添加！")
+            logger.info(f"用户{music_data['user']}添加了音乐{music_data['name']}")
         else:
             QMessageBox.warning(self, "取消", "未添加音乐。")
 
@@ -1222,6 +1223,7 @@ class MainWindow(QWidget):
 
         if confirm == QMessageBox.StandardButton.Yes:
             # 删除第一项
+            data0 = music_list[0]
             deleted_music = music_list.pop(0)
             data["music"] = music_list
 
@@ -1236,6 +1238,7 @@ class MainWindow(QWidget):
             QMessageBox.information(
                 self, "成功", f"已删除音乐：{deleted_music.get('name', '未知')}"
             )
+            logger.warning(f"用户删除了第一首歌曲，歌曲名：{data0}")
 
     def open_modify_music_dialog(self):
         """打开修改音乐信息对话框"""
