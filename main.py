@@ -1153,6 +1153,11 @@ class MainWindow(QWidget):
         dialog = MusicDialog(self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             music_data = dialog.get_music_data()
+            if "17" in music_data["user"]:
+                QMessageBox.information(self,"错误","该用户暂时无法添加音乐，请稍后重试！")
+                return
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            music_data = dialog.get_music_data()
             self.table_widget.insertRow(self.table_widget.rowCount())
             name_item = QTableWidgetItem(music_data["name"])
             singer_item = QTableWidgetItem(music_data["singer"])
