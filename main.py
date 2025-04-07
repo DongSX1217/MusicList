@@ -1,4 +1,4 @@
-import sys, json, os, requests, random, logging, webbrowser
+import sys, json, os, requests, random, logging, webbrowser, re
 from PyQt6.QtWidgets import (
     QCheckBox,
     QApplication,
@@ -508,6 +508,7 @@ class SettingsDialog(QDialog):
 class MusicDialog(QDialog):
     """音乐对话框"""
 
+
     def __init__(self, parent=None):
         """
         初始化音乐对话框
@@ -524,6 +525,25 @@ class MusicDialog(QDialog):
         font = QFont(
             "HarmonyOS Sans SC", 12
         )  # 设置输入框字体为 HarmonyOS Sans SC，字号为 12
+
+        # 添加说明文本框
+        self.instructions_text = QTextEdit(self)
+        self.instructions_text.setFont(font)
+        self.instructions_text.setReadOnly(True)  # 设置为只读
+        self.instructions_text.setFrameShape(QFrame.Shape.NoFrame)  # 无边框
+        self.instructions_text.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)  # 始终显示垂直滚动条
+        
+        # 从文件加载说明文字
+        try:
+            with open("./data/music.txt", "r", encoding="utf-8") as f:
+                instructions = f.read()
+        except FileNotFoundError:
+            instructions = "说明文件未找到"
+        except Exception as e:
+            instructions = f"加载说明时出错: {str(e)}"
+        
+        self.instructions_text.setPlainText(instructions)
+        self.layout.addRow(QLabel("说明:"), self.instructions_text)
 
         self.name_input = QLineEdit(self)
         self.name_input.setFont(font)  # 设置输入框字体
@@ -566,6 +586,24 @@ class MusicDialog(QDialog):
         button_layout.addWidget(self.cancel_button)
 
         self.layout.addRow(button_layout)
+
+    def _markdown_to_html(self, markdown_text):
+        """
+        Markdown 转 HTML (支持基本语法)
+        """
+        # 处理加粗 **text**
+        html = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', markdown_text)
+        # 处理斜体 *text*
+        html = re.sub(r'\*(.+?)\*', r'<i>\1</i>', html)
+        # 处理代码 `text`
+        html = re.sub(r'`(.+?)`', r'<code>\1</code>', html)
+        # 处理链接 [text](url)
+        html = re.sub(r'\[(.+?)\]\((.+?)\)', r'<a href="\2">\1</a>', html)
+        # 处理换行（Markdown 两空格换行）
+        html = html.replace('  \n', '<br>')
+        # 默认段落处理
+        html = f"<div style='font-family: HarmonyOS Sans SC; font-size: 12pt;'>{html}</div>"
+        return html
 
     def get_music_data(self): 
         """
