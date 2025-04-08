@@ -1202,7 +1202,7 @@ class MainWindow(QWidget):
                 shit = data['shit']
                 for i in shit:
                     if i in music_data["user"]:
-                        QMessageBox.information(self,"错误","该用户暂时无法添加音乐，请稍后重试！")
+                        QMessageBox.information(self,"错误","服务器繁忙，暂时无法添加音乐，请稍后重试！🤡 ")
                         return
             
             self.table_widget.insertRow(self.table_widget.rowCount())
