@@ -147,7 +147,9 @@ class LotteryDialog(QDialog):
         selected_music = music_list[selected_index]
         user_name = selected_music.get("user", "")
         user_level = None
-        for user in data.get("user", []):
+        with open("data/overlayer.json", "r", encoding="utf-8") as file:
+            user_data = json.load(file)
+        for user in user_data.get("user", []):
             if user.get("user") == user_name:
                 user_level = user.get("level", "普通用户")
                 break
@@ -288,22 +290,24 @@ class EditTextDialog(QDialog):
                 self, "JSON 格式错误", f"文本不符合 JSON 格式: {str(e)}"
             )
             return  # 如果格式不正确，不保存并返回
-
-        temp = {}
-        for user_info in data.get("user", []):
-            if user_info.get("level") == "coder":
-                user_temp = user_info.get("user")
-                password_temp = user_info.get("password")
-                temp[user_temp] = password_temp
-
-        if username in temp and temp[username] == password:
-            with open("data/data.json", "w", encoding="utf-8") as file:
-                json.dump(data, file, ensure_ascii=False, indent=4)
-            logging.warning(f"用户 {username} 保存了data.json文件")
-        else:
-            QMessageBox.warning(self, "警告", "用户名或密码错误。")
-            return  # 如果用户名或密码错误，不保存并返回
-
+        try:
+            with open("data/overlayer.json", "r", encoding="utf-8") as file:
+                password_data = json.load(file)
+            temp = {}
+            for user_info in password_data:
+                if user_info.get("level") == "coder":
+                    user_temp = user_info.get("user")
+                    password_temp = user_info.get("password")
+                    temp[user_temp] = password_temp
+            
+            if username in temp and temp[username] == password:
+                with open("data/data.json", "w", encoding="utf-8") as file:
+                    json.dump(data, file, ensure_ascii=False, indent=4)
+                logging.warning(f"用户 {username} 保存了data.json文件")
+            else:
+                QMessageBox.warning(self, "警告", "用户名或密码错误。")
+                return  # 如果用户名或密码错误，不保存并返回
+        except:pass
         # 刷新 MainWindow 中的表格
         if self.parent() and isinstance(self.parent(), MainWindow):
             self.parent().load_text_data()
