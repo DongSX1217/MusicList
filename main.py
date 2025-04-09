@@ -149,7 +149,7 @@ class LotteryDialog(QDialog):
         user_level = None
         with open("data/overlayer.json", "r", encoding="utf-8") as file:
             user_data = json.load(file)
-        for user in user_data.get("user", []):
+        for user in user_data:
             if user.get("user") == user_name:
                 user_level = user.get("level", "普通用户")
                 break
