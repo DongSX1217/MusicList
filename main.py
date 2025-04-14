@@ -770,6 +770,10 @@ class OtherWindow():
     def ci_setting():
         """打开ClassIsland设置窗口"""
         webbrowser.open("classisland://app/settings/components")
+        
+    def deepseek_website():
+        """打开DeepSeek对话网页"""
+        webbrowser.open("https://chat.deepseek.com/")
 
 
 
@@ -870,16 +874,16 @@ class MainWindow(QWidget):
         self.edit_menu = QMenu(self)
         menu_font = QFont("HarmonyOS Sans SC", 10)  # 设置字体和大小
         self.edit_menu.setFont(menu_font)
-        self.add_music_action = self.edit_menu.addAction("添加音乐")
+        self.add_music_action = self.edit_menu.addAction("添加音乐（点歌）")
         self.add_music_action.triggered.connect(self.add_music)
-        self.edit_text_action = self.edit_menu.addAction("编辑文本")
-        self.edit_text_action.triggered.connect(self.open_edit_text_dialog)
         self.lottery_action = self.edit_menu.addAction("抽奖")
         self.lottery_action.triggered.connect(self.open_lottery_dialog)
         self.delete_first_action = self.edit_menu.addAction("删除第一项")
         self.delete_first_action.triggered.connect(self.delete_first_music)
         self.modify_music_action = self.edit_menu.addAction("修改音乐信息")
         self.modify_music_action.triggered.connect(self.open_modify_music_dialog)
+        self.edit_text_action = self.edit_menu.addAction("编辑文本（仅管理员可操作）")
+        self.edit_text_action.triggered.connect(self.open_edit_text_dialog)
         self.edit.setMenu(self.edit_menu) # 将编辑菜单设置到工具按钮上
 
 
@@ -899,15 +903,17 @@ class MainWindow(QWidget):
         self.class_swap.triggered.connect(OtherWindow.class_swap)
         self.ci_setting = self.other_menu.addAction("ClassIsland设置")
         self.ci_setting.triggered.connect(OtherWindow.ci_setting)
+        self.open_deepseek_website = self.other_menu.addAction("打开DeepSeek")
+        self.open_deepseek_website.triggered.connect(OtherWindow.deepseek_website)
         self.other.setMenu(self.other_menu) # 将编辑菜单设置到工具按钮上
 
 
         # 创建一个水平布局
         settings_close_layout = QHBoxLayout()
-        self.refresh_button = QPushButton("刷新", self)
-        self.refresh_button.setFont(button_font)
-        self.refresh_button.clicked.connect(self.load_text_data)
-        settings_close_layout.addWidget(self.refresh_button)
+        self.add_button = QPushButton("点歌", self)
+        self.add_button.setFont(button_font)
+        self.add_button.clicked.connect(self.add_music)
+        settings_close_layout.addWidget(self.add_button)
         self.edit.setText("修改歌单")
         self.edit.setFont(button_font)
         settings_close_layout.addWidget(self.edit)
