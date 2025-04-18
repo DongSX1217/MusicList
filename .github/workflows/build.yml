@@ -33,15 +33,15 @@ jobs:
       run: |
         pyinstaller --onefile --noconsole main.py
 
-    - name: Build music_open.py
-      run: |
-        pyinstaller --onefile music_open.py
-
     - name: Upload main.exe
       uses: actions/upload-artifact@v4
       with:
         name: main   # 第一个产物的自定义名称
         path: dist/main.exe  # 精确指定文件路径
+
+    - name: Build music_open.py
+      run: |
+        pyinstaller --onefile music_open.py
 
     - name: Upload music_open.exe
       uses: actions/upload-artifact@v4
