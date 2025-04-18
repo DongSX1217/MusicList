@@ -1309,43 +1309,7 @@ class MainWindow(QWidget):
                 self, "成功", f"已删除音乐：{deleted_music.get('name', '未知')}"
             )
             logger.warning(f"用户删除了第一首歌曲，歌曲名：{data0}")
-    def delete_first_music(self):
-        """自动删除音乐列表中的第一项"""
-        try:
-            with open("data/data.json", "r", encoding="utf-8") as file:
-                data = json.load(file)
-                music_list = data.get("music", [])
-        except FileNotFoundError:
-            QMessageBox.warning(self, "错误", "未找到音乐数据文件。")
-            return
 
-        if not music_list:
-            QMessageBox.warning(self, "警告", "音乐列表为空，无法播放。")
-            return
-
-        # 获取第一首音乐
-        first_music = music_list[0]
-        
-        try:
-
-            
-            # 播放后自动删除（不需要确认）
-            deleted_music = music_list.pop(0)
-            data["music"] = music_list
-
-            # 保存更新后的数据
-            with open("data/data.json", "w", encoding="utf-8") as file:
-                json.dump(data, file, ensure_ascii=False, indent=4)
-
-            # 刷新表格
-            self.load_music_data(music_list)
-
-            # 记录日志
-            logger.warning(f"自动删除已播放的歌曲，歌曲名：{first_music.get('name', '未知')}")
-            
-        except Exception as e:
-            QMessageBox.warning(self, "错误", f"播放或删除音乐时出错: {str(e)}")
-            logger.error(f"播放或删除音乐时出错: {str(e)}")
 
     def open_modify_music_dialog(self):
         """打开修改音乐信息对话框"""
