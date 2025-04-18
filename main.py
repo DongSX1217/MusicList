@@ -1196,6 +1196,12 @@ class MainWindow(QWidget):
         if total_width > self.width():
             self.setFixedWidth(total_width)
 
+    def check_new(a,b):
+        if re.search(a,b):
+            return True
+        else:
+            return False
+
     def add_music(self):
         """添加音乐"""
         dialog = MusicDialog(self)
@@ -1208,14 +1214,15 @@ class MainWindow(QWidget):
                     data = json.load(file)
             except FileNotFoundError:
                 data = {"text": "", "music": [], "music_already": []}
-            if data['shit']:
-                shit = data['shit']
-                for i in shit:
-                    if i in music_data["user"]:
+            try:
+                if data['wall']['user']:
+                    a = data['wall']
+                    b = music_data['user']
+                    if re.search(a,b):
                         QMessageBox.information(self,"错误","歌单列表从 Internet\
-上的主页中检索失败，可能是服务器繁忙所致，请稍候重试。给您带来的不便，敬请谅解！")
+    上的主页中检索失败，可能是服务器繁忙所致，请稍候重试。给您带来的不便，敬请谅解！")
                         return
-            
+            except:pass
             self.table_widget.insertRow(self.table_widget.rowCount())
             name_item = QTableWidgetItem(music_data["name"])
             singer_item = QTableWidgetItem(music_data["singer"])
