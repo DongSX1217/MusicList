@@ -984,14 +984,14 @@ class MainWindow(QWidget):
     def about(self):
         """关于"""
         text = """
-        MusicRequest教室大屏桌面点歌工具
+        MusicList教室大屏桌面点歌工具
 
         介绍：
         一个用于教室大屏的点歌工具，可以添加音乐，修改音乐信息，删除音乐，编辑文本，抽奖，修改设置等。
 
-        版本：1.4.0
+        版本：1.1
         作者：Dong
-        仓库地址：https://gitee.com/DDXiDong/MusicRequest
+        仓库地址：https://github.com/DongSX1217/MusicList
         """
         QMessageBox.about(self, "关于", text)
 
