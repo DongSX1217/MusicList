@@ -1149,7 +1149,7 @@ class MainWindow(QWidget):
 
     def load_music_data(self, music_list):
         """
-        加载音乐数据并更新表格
+        加载音乐数据并更新表格，确保换行内容完全显示
         
         参数：
         music_list (list): 音乐列表
@@ -1159,42 +1159,82 @@ class MainWindow(QWidget):
         self.table_widget.setHorizontalHeaderLabels(["音乐名", "歌手", "点歌人"])
         self.table_widget.setRowCount(len(music_list))
 
+        # 设置表格属性以支持换行
+        self.table_widget.setWordWrap(True)
+        self.table_widget.setTextElideMode(Qt.TextElideMode.ElideNone)
+        
+        # 清除可能影响显示的样式表
+        self.table_widget.setStyleSheet("""
+            QTableWidget {
+                gridline-color: #ddd;
+            }
+            QTableWidget::item {
+                padding: 5px;
+            }
+        """)
+
+        # 获取当前字体度量
+        font = self.table_widget.font()
+        font_metrics = self.table_widget.fontMetrics()
+        line_height = font_metrics.height()
+
         for row, music in enumerate(music_list):
-            # 获取原始名称
-            original_name = music.get("name", "")
-            # 检查是否有URL或文件路径
+            # 处理音乐名（支持换行符）
+            original_name = music.get("name", "").replace('\\n', '\n')
             url = music.get("url", "")
-            # 如果没有URL则在名称前加*
             display_name = f"*{original_name}" if not url.strip() else original_name
             
+            # 处理歌手名（支持换行符）
+            singer_text = music.get("singer", "").replace('\\n', '\n')
+            
+            # 创建表格项
             name_item = QTableWidgetItem(display_name)
-            singer_item = QTableWidgetItem(music.get("singer", ""))
+            singer_item = QTableWidgetItem(singer_text)
             user_item = QTableWidgetItem(music.get("user", ""))
 
-            # 设置单元格内容居中
+            # 设置文本对齐方式（居中）
             name_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             singer_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             user_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 
-            # 保存原始名称到自定义角色（用于其他功能）
+            # 启用文本换行
+            name_item.setFlags(name_item.flags() | Qt.ItemFlag.ItemIsEditable)  # 保持可编辑状态
+            singer_item.setFlags(singer_item.flags() | Qt.ItemFlag.ItemIsEditable)
+            
+            # 保存原始名称
             name_item.setData(Qt.ItemDataRole.UserRole, original_name)
             
             self.table_widget.setItem(row, 0, name_item)
             self.table_widget.setItem(row, 1, singer_item)
             self.table_widget.setItem(row, 2, user_item)
 
-        # 调整列宽和行高以适应内容
-        self.table_widget.resizeColumnsToContents()
-        self.table_widget.resizeRowsToContents()
+            # 计算需要的行高
+            name_lines = display_name.split('\n')
+            singer_lines = singer_text.split('\n')
+            max_lines = max(len(name_lines), len(singer_lines), 1)
+            
+            # 设置行高（基础高度 + 每行额外高度 + 边距）
+            self.table_widget.setRowHeight(row, line_height * max_lines + 10)
 
-        # 计算表格所需的最小宽度，并相应地调整窗口宽度
-        total_width = (
-            self.table_widget.horizontalHeader().length()
-            + self.table_widget.verticalScrollBar().width()
-            + 20
-        )  # 加上滚动条宽度和边距
+        # 调整列宽
+        self.table_widget.resizeColumnsToContents()
+        
+        # 确保列宽足够显示内容
+        for col in range(self.table_widget.columnCount()):
+            self.table_widget.horizontalHeader().setSectionResizeMode(
+                col, QHeaderView.ResizeMode.ResizeToContents
+            )
+            # 设置最小宽度防止内容被压缩
+            current_width = self.table_widget.columnWidth(col)
+            self.table_widget.setColumnWidth(col, max(current_width, 100))
+        
+        # 调整窗口宽度
+        total_width = sum(
+            [self.table_widget.columnWidth(i) for i in range(self.table_widget.columnCount())]
+        ) + self.table_widget.verticalScrollBar().width() + 20
+        
         if total_width > self.width():
-            self.setFixedWidth(total_width)
+            self.setFixedWidth(min(total_width, self.screen().availableGeometry().width() - 50))
 
     def check_new(a,b):
         if re.search(a,b):
