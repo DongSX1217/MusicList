@@ -5,12 +5,11 @@ app = Flask(__name__)
 
 # HTML模板，包含变量插值
 HTML_TEMPLATE = """
-<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>放学快乐时光</title>
+    <title>放学</title>
     <style>
         body {
             font-family: 'Arial Rounded MT Bold', 'Microsoft YaHei', sans-serif;
@@ -33,6 +32,30 @@ HTML_TEMPLATE = """
             padding: 40px;
             width: 80%;
             max-width: 800px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee);
+            background-size: 400% 400%;
+            z-index: -1;
+            border-radius: 30px;
+            animation: gradientBG 15s ease infinite;
+            filter: blur(20px);
+            opacity: 0.7;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
         h1 {
@@ -40,16 +63,19 @@ HTML_TEMPLATE = """
             font-size: 4rem;
             margin-bottom: 30px;
             text-shadow: 3px 3px 0 rgba(255, 107, 107, 0.2);
+            animation: pulse 2s infinite;
         }
         
-        .music-info {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .subtitle {
+            color: #666;
             font-size: 1.5rem;
-            color: #333;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
         }
         
         .button-container {
@@ -69,6 +95,9 @@ HTML_TEMPLATE = """
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             min-width: 200px;
         }
         
@@ -76,35 +105,107 @@ HTML_TEMPLATE = """
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
+        
+        .btn i {
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .btn-xinhua {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-edu {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-github {
+            background-color: #2c3e50;
+            color: white;
+        }
+        
+        .btn-bilibili {
+            background-color: #fb7299;
+            color: white;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            border-radius: 50%;
+            animation: fall 5s linear infinite;
+        }
+        
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .subtitle { font-size: 1.2rem; }
+            .btn { min-width: 150px; padding: 12px 20px; }
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <h1>放学啦！</h1>
-        
-        <div class="music-info">
-            <i class="fas fa-music"></i> 用户{{ user }} 点了歌曲《{{ music }}》
+        <h1>放学力！</h1>
+        <div class="subtitle">今日放学音乐：《{{ music }}》<br>点歌人：{{user}}
         </div>
-        
         <div class="button-container">
-            <button class="btn" style="background-color: #e74c3c; color: white;" onclick="window.open('https://www.xinhuanet.com/', '_blank')">
+            <button class="btn btn-xinhua" onclick="window.open('https://www.xinhuanet.com/', '_blank')">
                 <i class="fas fa-newspaper"></i> 新华网
             </button>
             
-            <button class="btn" style="background-color: #3498db; color: white;" onclick="window.open('https://basic.smartedu.cn/', '_blank')">
+            <button class="btn btn-edu" onclick="window.open('https://basic.smartedu.cn/', '_blank')">
                 <i class="fas fa-graduation-cap"></i> 智慧中小学
             </button>
             
-            <button class="btn" style="background-color: #2c3e50; color: white;" onclick="window.open('https://github.com/', '_blank')">
+            <button class="btn btn-github" onclick="window.open('https://github.com/', '_blank')">
                 <i class="fab fa-github"></i> Github
             </button>
             
-            <button class="btn" style="background-color: #fb7299; color: white;" onclick="window.open('https://www.bilibili.com/', '_blank')">
+            <button class="btn btn-bilibili" onclick="window.open('https://www.bilibili.com/', '_blank')">
                 <i class="fas fa-tv"></i> 哔哩哔哩
             </button>
         </div>
     </div>
+
+    <script>
+        // 创建彩色纸屑效果
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#48dbfb', '#1dd1a1', '#feca57', '#5f27cd', '#ff9ff3'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = -10 + 'px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = Math.random() * 10 + 5 + 'px';
+                confetti.style.height = confetti.style.width;
+                confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(confetti);
+                
+                // 移除纸屑元素以避免内存泄漏
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+        
+        // 初始纸屑效果
+        createConfetti();
+        
+        // 每3秒创建新的纸屑
+        setInterval(createConfetti, 3000);
+    </script>
 </body>
 </html>
 """
@@ -127,4 +228,4 @@ def show_music():
     return render_template_string(HTML_TEMPLATE, user=user, music=music)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
