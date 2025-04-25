@@ -717,6 +717,11 @@ class EditMusicDialog(QDialog):
         self.user_input.setText(music_data.get("user", ""))
         layout.addRow(QLabel("点歌人:"), self.user_input)
 
+        self.note_input = QLineEdit(self)
+        self.note_input.setFont(font)
+        self.note_input.setText(music_data.get("note", ""))
+        layout.addRow(QLabel("备注:"), self.note_input)
+
         button_layout = QHBoxLayout()
         self.ok_button = QPushButton("保存", self)
         self.ok_button.setFont(font)
@@ -735,6 +740,7 @@ class EditMusicDialog(QDialog):
             "singer": self.singer_input.text(),
             "url": self.url_input.text(),
             "user": self.user_input.text(),
+            "note": self.note_input.text() 
         }
 
     def select_music_file(self):
@@ -839,8 +845,8 @@ class MainWindow(QWidget):
 
         # 添加表格
         self.table_widget = QTableWidget(self)
-        self.table_widget.setColumnCount(3)
-        self.table_widget.setHorizontalHeaderLabels(["音乐名", "歌手", "点歌人"])
+        self.table_widget.setColumnCount(4)  # 改为4列
+        self.table_widget.setHorizontalHeaderLabels(["音乐名", "歌手", "点歌人", "备注"])  # 添加备注列
         self.table_widget.setAlternatingRowColors(True)
         self.table_widget.setSelectionBehavior(
             QTableWidget.SelectionBehavior.SelectRows
@@ -1155,8 +1161,8 @@ class MainWindow(QWidget):
         music_list (list): 音乐列表
         """
         self.table_widget.clear()
-        self.table_widget.setColumnCount(3)
-        self.table_widget.setHorizontalHeaderLabels(["音乐名", "歌手", "点歌人"])
+        self.table_widget.setColumnCount(4)  
+        self.table_widget.setHorizontalHeaderLabels(["音乐名", "歌手", "点歌人", "备注"])
         self.table_widget.setRowCount(len(music_list))
 
         # 设置表格属性以支持换行
@@ -1186,7 +1192,13 @@ class MainWindow(QWidget):
             
             # 处理歌手名（支持换行符）
             singer_text = music.get("singer", "").replace('\\n', '\n')
+
+            # 添加备注项
+            note_item = QTableWidgetItem(music.get("note", "").replace('\\n', '\n'))
+            note_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            note_item.setFlags(note_item.flags() | Qt.ItemFlag.ItemIsEditable)
             
+                    
             # 创建表格项
             name_item = QTableWidgetItem(display_name)
             singer_item = QTableWidgetItem(singer_text)
@@ -1207,11 +1219,13 @@ class MainWindow(QWidget):
             self.table_widget.setItem(row, 0, name_item)
             self.table_widget.setItem(row, 1, singer_item)
             self.table_widget.setItem(row, 2, user_item)
+            self.table_widget.setItem(row, 3, note_item)
 
             # 计算需要的行高
             name_lines = display_name.split('\n')
             singer_lines = singer_text.split('\n')
-            max_lines = max(len(name_lines), len(singer_lines), 1)
+            note_lines = music.get("note", "").split('\n')
+            max_lines = max(len(name_lines), len(singer_lines), len(note_lines), 1)
             
             # 设置行高（基础高度 + 每行额外高度 + 边距）
             self.table_widget.setRowHeight(row, line_height * max_lines + 10)
