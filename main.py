@@ -1395,5 +1395,5 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)  # 创建QApplication对象
     ex = MainWindow()  # 创建窗口对象
     ex.show()  # 显示窗口
-    logger.info("Program started.")  # 记录日志
+    logger.debug("Program started.")  # 记录日志
     sys.exit(app.exec())  # 运行程序，并等待退出
