@@ -388,6 +388,10 @@ class SettingsDialog(QDialog):
         self.show_user_checkbox.setChecked(self.settings.get("show_user", True))
         self.layout.addRow(self.show_user_checkbox)
 
+        self.show_note_checkbox = QCheckBox("显示备注", self)
+        self.show_note_checkbox.setChecked(self.settings.get("show_note", True))
+        self.layout.addRow(self.show_note_checkbox)
+
         # 连接信号和槽
         self.list_spacing_radio_manual.toggled.connect(self.toggle_spacing_spinbox)
 
@@ -431,30 +435,10 @@ class SettingsDialog(QDialog):
                 "show_name": True,
                 "show_singer": True,
                 "show_user": True,
+                "show_note": True,
             }
         return settings
 
-    def get_settings(self):
-        """获取设置"""
-        return {
-            "font": self.font_combo.currentText(),
-            "font_size": self.font_size_spinbox.value(),
-            "window_width": self.window_width_spinbox.value(),
-            "window_height": self.window_height_spinbox.value(),
-            "list_spacing": {
-                "type": (
-                    "manual" if self.list_spacing_radio_manual.isChecked() else "auto"
-                ),
-                "value": (
-                    self.list_spacing_spinbox.value()
-                    if self.list_spacing_radio_manual.isChecked()
-                    else 0
-                ),
-            },
-            "show_name": self.show_name_checkbox.isChecked(),
-            "show_singer": self.show_singer_checkbox.isChecked(),
-            "show_user": self.show_user_checkbox.isChecked(),
-        }
 
     def accept(self):
         """保存设置"""
@@ -485,6 +469,7 @@ class SettingsDialog(QDialog):
         self.show_name_checkbox.setChecked(settings.get("show_name", True))
         self.show_singer_checkbox.setChecked(settings.get("show_singer", True))
         self.show_user_checkbox.setChecked(settings.get("show_user", True))
+        self.show_note_checkbox.setChecked(settings.get("show_note", True))
 
     def get_settings(self):
         """获取设置"""
@@ -506,6 +491,8 @@ class SettingsDialog(QDialog):
             "show_name": self.show_name_checkbox.isChecked(),
             "show_singer": self.show_singer_checkbox.isChecked(),
             "show_user": self.show_user_checkbox.isChecked(),
+            "show_note": self.show_note_checkbox.isChecked(), 
+            
         }
 
 
@@ -1133,9 +1120,11 @@ class MainWindow(QWidget):
         show_name = settings.get("show_name", True)
         show_singer = settings.get("show_singer", True)
         show_user = settings.get("show_user", True)
+        show_note = settings.get("show_note", True)
         self.table_widget.setColumnHidden(0, not show_name)
         self.table_widget.setColumnHidden(1, not show_singer)
         self.table_widget.setColumnHidden(2, not show_user)
+        self.table_widget.setColumnHidden(3, not show_note)
         # 更新窗口位置
         self.move(self.position)
 
