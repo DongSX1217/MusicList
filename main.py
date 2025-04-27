@@ -1158,13 +1158,14 @@ class MainWindow(QWidget):
         self.table_widget.setWordWrap(True)
         self.table_widget.setTextElideMode(Qt.TextElideMode.ElideNone)
         
-        # 清除可能影响显示的样式表
+        # 设置样式表确保内容完全显示
         self.table_widget.setStyleSheet("""
             QTableWidget {
                 gridline-color: #ddd;
             }
             QTableWidget::item {
                 padding: 5px;
+                white-space: pre-wrap;  /* 保留空白和换行 */
             }
         """)
 
@@ -1183,10 +1184,10 @@ class MainWindow(QWidget):
             singer_text = music.get("singer", "").replace('\\n', '\n')
 
             # 添加备注项
-            note_item = QTableWidgetItem(music.get("note", "").replace('\\n', '\n'))
+            note_text = music.get("note", "").replace('\\n', '\n')
+            note_item = QTableWidgetItem(note_text)
             note_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             note_item.setFlags(note_item.flags() | Qt.ItemFlag.ItemIsEditable)
-            
                     
             # 创建表格项
             name_item = QTableWidgetItem(display_name)
@@ -1199,7 +1200,7 @@ class MainWindow(QWidget):
             user_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 
             # 启用文本换行
-            name_item.setFlags(name_item.flags() | Qt.ItemFlag.ItemIsEditable)  # 保持可编辑状态
+            name_item.setFlags(name_item.flags() | Qt.ItemFlag.ItemIsEditable)
             singer_item.setFlags(singer_item.flags() | Qt.ItemFlag.ItemIsEditable)
             
             # 保存原始名称
@@ -1213,7 +1214,7 @@ class MainWindow(QWidget):
             # 计算需要的行高
             name_lines = display_name.split('\n')
             singer_lines = singer_text.split('\n')
-            note_lines = music.get("note", "").split('\n')
+            note_lines = note_text.split('\n')
             max_lines = max(len(name_lines), len(singer_lines), len(note_lines), 1)
             
             # 设置行高（基础高度 + 每行额外高度 + 边距）
