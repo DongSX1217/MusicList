@@ -221,11 +221,13 @@ def home():
 def show_music_request(user, music):
     return render_template_string(HTML_TEMPLATE, user=user, music=music)
 
+'''
 @app.route('/music')
 def show_music():
     user = requests.args.get('user', '匿名用户')
     music = requests.args.get('music', '未指定歌曲')
     return render_template_string(HTML_TEMPLATE, user=user, music=music)
+'''
 
 if __name__ == '__main__':
     app.run()

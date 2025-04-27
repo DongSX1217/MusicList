@@ -268,9 +268,9 @@ def main():
         music_name = first_music['name']
         music_url = first_music['url']
         user = first_music['user']
-        time.sleep(2)
-        data_html(user,music_name)
-        webbrowser.open(f'http://localhost:5000/{user}/{music_name}')
+       
+        # data_html(user,music_name)
+       
 
         local_dir = "./music/"
         local_file_path = os.path.join(local_dir, f"{music_name}.mp3")
@@ -284,7 +284,8 @@ def main():
             if downloaded_path and os.path.exists(downloaded_path):
                 print(f"文件已保存至: {downloaded_path}")
                 play_music(downloaded_path)
-                
+        time.sleep(2)
+        webbrowser.open(f'http://localhost:5000/{user}/{music_name}')
     except Exception as e:
         messagebox.showerror("错误", f"程序运行失败: {str(e)}")
         sys.exit(1)
