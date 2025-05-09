@@ -173,6 +173,10 @@ HTML_TEMPLATE = """
             <button class="btn btn-bilibili" onclick="window.open('https://www.bilibili.com/', '_blank')">
                 <i class="fas fa-tv"></i> 哔哩哔哩
             </button>
+            
+            <button class="btn btn-msn" onclick="window.open('https://www.msn.cn/zh-cn/weather/hourlyforecast/in-%E6%B5%B7%E5%8D%97%E7%9C%81,%E4%B8%89%E4%BA%9A%E5%B8%82/', '_blank')">
+                <i class="fas fa-weaher"></i> msn天气
+            </button>
         </div>
     </div>
 
